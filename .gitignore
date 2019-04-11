@@ -1,4 +1,5 @@
 .idea
-.iml
-.exe
+*.iml
+*.exe
+*.class
 *.jar
