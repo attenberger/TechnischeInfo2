@@ -1,3 +1,5 @@
+package src;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -33,8 +35,8 @@ public class TimetableCreator {
 		slots.add(new Slot(LocalTime.of(15, 15), LocalTime.of(16, 45), "Vorlesung 1"));
 		slots.add(new Slot(LocalTime.of(17, 00), LocalTime.of(18, 30), "Vorlesung 1"));
 		slots.add(new Slot(LocalTime.of(18, 45), LocalTime.of(20, 15), "Vorlesung 1"));
-		
-		TextToImage4 textToImage = new TextToImage4();		
+
+		TimetableCreator textToImage = new TimetableCreator();
 		
 		BufferedImage image = textToImage.generateImage("Raum: 2.007", new Date(), slots);
 		try {
