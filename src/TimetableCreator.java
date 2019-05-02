@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Date;
 import java.util.List;
 
@@ -27,29 +28,34 @@ public class TimetableCreator {
 	private static final int FONTSIZE = 20;
 	private static final int MAXLINESPERSLOT = 3;
 
-	public static void main(String[] args) {
-		
-		List<Slot> slots = new ArrayList<>();
-		slots.add(new Slot(LocalTime.of(8, 15), LocalTime.of(9, 45), "Vorlesung 1\nsdfsfdsfsfsdf\ndsfdsfsdf"));
-		slots.add(new Slot(LocalTime.of(10, 00), LocalTime.of(11, 30), "Vorlesung 1"));
-		slots.add(new Slot(LocalTime.of(11, 45), LocalTime.of(13, 15), "Vorlesung 1"));
-		slots.add(new Slot(LocalTime.of(13, 30), LocalTime.of(15, 00), "Vorlesung 1"));
-		slots.add(new Slot(LocalTime.of(15, 15), LocalTime.of(16, 45), "Vorlesung 1"));
-		slots.add(new Slot(LocalTime.of(17, 00), LocalTime.of(18, 30), "Vorlesung 1"));
-		slots.add(new Slot(LocalTime.of(18, 45), LocalTime.of(20, 15), "Vorlesung 1"));
+	private byte[] picToBytes(BufferedImage image) throws Exception {
 
-		TimetableCreator textToImage = new TimetableCreator();
-		
-		BufferedImage image = textToImage.generateImage("Raum: 2.007", new Date(), slots);
-		try {
-            ImageIO.write(image, "png", new File("H:/Sample4.png"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+		byte[][] pixels = new byte[image.getWidth()][];
 
+		//read black / white values from image and save into byte array
+		for (int x = 0; x < image.getWidth(); x++) {
+			pixels[x] = new byte[image.getHeight()];
+
+			for (int y = 0; y < image.getHeight(); y++) {
+				pixels[x][y] = (byte) (image.getRGB(x, y) == 0xFFFFFFFF ? 1 : 0);
+			}
+		}
+
+		//byte array to bit set
+		BitSet bits = new BitSet(pixels.length * pixels[0].length);
+		for (int i = 0; i < pixels.length; i++) {
+			for (int j = 0; j < pixels[i].length; j++) {
+				if (pixels[i][j] == 1) {
+					bits.set(i * pixels.length + j);
+				}
+			}
+		}
+
+		//write bits into byte array -> TCP sends whole bytes
+		return bits.toByteArray();
 	}
 	
-	public BufferedImage generateImage(String room, Date date, List<Slot> slots) {
+	public byte[] generateImageByteArray(String room, String date, List<Slot> slots) throws Exception {
 		
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_BINARY);
         Graphics2D graphics2d = image.createGraphics();
@@ -63,8 +69,7 @@ public class TimetableCreator {
         FontMetrics fontmetrics = graphics2d.getFontMetrics();
         graphics2d.setColor(Color.BLACK);
         
-        DateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
-        printTextCentered(graphics2d, dateformat.format(date), fontmetrics.getAscent() * 1);
+        printTextCentered(graphics2d, date, fontmetrics.getAscent());
         printTextCentered(graphics2d, room, (int)(fontmetrics.getAscent() * 2.5));
         graphics2d.drawLine(0, (int)(fontmetrics.getAscent() * 3), WIDTH, (int)(fontmetrics.getAscent() * 3));
         
@@ -72,9 +77,10 @@ public class TimetableCreator {
         font = new Font("Arial", Font.PLAIN, 15);
         graphics2d.setFont(font);
         printHourScale(graphics2d, fontmetrics.getAscent() * 5, WIDTH_HOURSCALE);
-        printSlots(graphics2d, slots, fontmetrics.getAscent() * 5, WIDTH_HOURSCALE, WIDTH - WIDTH_HOURSCALE);        
+        printSlots(graphics2d, slots, fontmetrics.getAscent() * 5, WIDTH_HOURSCALE, WIDTH - WIDTH_HOURSCALE);
         graphics2d.dispose();
-        return image;		
+
+        return picToBytes(image);
 	}
 	
 	private void printSlots(Graphics2D graphics2d, List<Slot> slots, int pos_Y, int pos_X, int width) {

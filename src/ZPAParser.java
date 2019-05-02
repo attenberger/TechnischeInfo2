@@ -18,10 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.*;
 
-
 public class ZPAParser {
-
-    private static final int PORT = 8090;
 
     private final String ZPA_URL = "https://w3-o.cs.hm.edu:8000/public/bookings/";
 
@@ -33,11 +30,28 @@ public class ZPAParser {
     private String csrfToken;
     private String csrfMiddleWareToken;
 
-    private static List<Slot> slots = new ArrayList<>();
-
-    private ZPAParser(String date, String room) {
+    public ZPAParser(String date, String room) {
         this.room = room;
         this.date = date;
+    }
+
+    public List<Slot> getSlots() {
+
+        String html;
+
+        try {
+            html = getTokens();
+
+            initializeRooms(html);
+
+            html = getTimeTable();
+
+            return parseTimeTable(html);
+
+        } catch (Exception e) {
+            System.out.println("Failed reading html!");
+            return null;
+        }
     }
 
     private String getTokens() throws Exception {
@@ -81,7 +95,9 @@ public class ZPAParser {
         return readHTML(con);
     }
 
-    private void parseTimeTable(String html) {
+    private List<Slot> parseTimeTable(String html) {
+        List<Slot> slots = new ArrayList<>();
+
         //replace <br> for getting a string with new lines after each body value
         final String newLine = "§§NEWLINE§§";
         html = html.replaceAll("<br>", newLine);
@@ -98,6 +114,8 @@ public class ZPAParser {
             slots.add(slot);
         }
         slots.sort((a, b) -> a.getStartTime().compareTo(b.getEndTime()));
+
+        return slots;
     }
 
     private void initializeRooms(String html) {
@@ -124,73 +142,12 @@ public class ZPAParser {
         return response.toString();
     }
 
-    private byte[] picToBytes(BufferedImage image) throws Exception {
-
-        byte[][] pixels = new byte[image.getWidth()][];
-
-        //read black / white values from image and save into byte array
-        for (int x = 0; x < image.getWidth(); x++) {
-            pixels[x] = new byte[image.getHeight()];
-
-            for (int y = 0; y < image.getHeight(); y++) {
-                pixels[x][y] = (byte) (image.getRGB(x, y) == 0xFFFFFFFF ? 1 : 0);
-            }
-        }
-
-        //byte array to bit set
-        BitSet bits = new BitSet(pixels.length * pixels[0].length);
-        for (int i = 0; i < pixels.length; i++) {
-            for (int j = 0; j < pixels[i].length; j++) {
-                if (pixels[i][j] == 1) {
-                    bits.set(i * pixels.length + j);
-                }
-            }
-        }
-
-        //write bits into byte array -> TCP sends whole bytes
-        return bits.toByteArray();
-    }
-
-    @Override
+    /*@Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (Slot slot : slots) {
             builder.append(slot);
         }
         return builder.toString();
-    }
-
-    public static void main(String[] args) {
-        DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        String date = format.format(new Date());
-
-        ZPAParser parser = new ZPAParser(date, "R1.006");
-
-        String html;
-
-        try {
-            html = parser.getTokens();
-
-            parser.initializeRooms(html);
-
-            html = parser.getTimeTable();
-
-            parser.parseTimeTable(html);
-
-            System.out.println(parser);
-
-            TimetableCreator textToImage = new TimetableCreator();
-
-            BufferedImage image = textToImage.generateImage("Raum: 2.007", new Date(), slots);
-            try {
-                ImageIO.write(image, "png", new File("Sample.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-        } catch (Exception e) {
-            System.out.println("Failed reading html!");
-            e.printStackTrace();
-        }
-    }
+    }*/
 }
