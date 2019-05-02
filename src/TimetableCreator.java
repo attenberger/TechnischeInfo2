@@ -24,11 +24,13 @@ public class TimetableCreator {
 	private static final int HOUR_HEIGHT = 45;
 	private static final int FIRST_HOUR = 8;
 	private static final int PADDING = 5;
+	private static final int FONTSIZE = 20;
+	private static final int MAXLINESPERSLOT = 3;
 
 	public static void main(String[] args) {
 		
 		List<Slot> slots = new ArrayList<>();
-		slots.add(new Slot(LocalTime.of(8, 15), LocalTime.of(9, 45), "Vorlesung 1"));
+		slots.add(new Slot(LocalTime.of(8, 15), LocalTime.of(9, 45), "Vorlesung 1\nsdfsfdsfsfsdf\ndsfdsfsdf"));
 		slots.add(new Slot(LocalTime.of(10, 00), LocalTime.of(11, 30), "Vorlesung 1"));
 		slots.add(new Slot(LocalTime.of(11, 45), LocalTime.of(13, 15), "Vorlesung 1"));
 		slots.add(new Slot(LocalTime.of(13, 30), LocalTime.of(15, 00), "Vorlesung 1"));
@@ -56,7 +58,7 @@ public class TimetableCreator {
         graphics2d.setPaint(new Color(255,255,255));
         graphics2d.fillRect(0, 0, image.getWidth(), image.getHeight());
         
-        Font font = new Font("Arial", Font.BOLD, 20);
+        Font font = new Font("Arial", Font.BOLD, FONTSIZE);
         graphics2d.setFont(font);
         FontMetrics fontmetrics = graphics2d.getFontMetrics();
         graphics2d.setColor(Color.BLACK);
@@ -110,7 +112,10 @@ public class TimetableCreator {
         if (centered) {
         	offset_X += (width - fontmetrics.stringWidth(text)) / 2;
         }
-        graphics2d.drawString(text, offset_X, pos_Y);
+        String[] lines = text.split("\n", MAXLINESPERSLOT);
+        for (int line = 0; line < lines.length; line++) {
+            graphics2d.drawString(lines[line], offset_X, pos_Y + line * FONTSIZE);
+        }
 	}
 
 }
