@@ -5,14 +5,14 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.BitSet;
+import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.*;
-
-import javax.imageio.ImageIO;
 
 public class TimetableCreator {
 	
