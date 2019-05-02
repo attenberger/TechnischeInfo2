@@ -18,8 +18,10 @@ public class EchoSocket extends Thread {
     @Override
     public void run() {
         try {
+            System.out.println("RUN");
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String room = reader.readLine();
+            System.out.println(room);
             DateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
             String date = dateformat.format(new Date());
 
@@ -31,6 +33,7 @@ public class EchoSocket extends Thread {
 
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.write(bytes);
+            System.out.println("wrote");
 
             socket.close();
         } catch (Exception e) {

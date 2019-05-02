@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
@@ -50,6 +47,8 @@ public class TimetableCreator {
 				}
 			}
 		}
+
+		System.out.println(Arrays.toString(bits.toByteArray()));
 
 		//write bits into byte array -> TCP sends whole bytes
 		return bits.toByteArray();
