@@ -28,13 +28,15 @@ public class Test {
             byte[] bits = new byte[bytes.length * 8];
 
             for (int i = 0; i < bytes.length; i++) {
-                System.out.println(Integer.toBinaryString(bytes[i]));
+                char[] bitChars = String.format("%8s", Integer.toBinaryString(bytes[i] & 0xFF)).replace(' ', '0').toCharArray();
                 for (int j = 0; j < 8; j++) {
-                    /*if (Boolean.parseBoolean(String.valueOf(bitChars[j]))) {
+                    if (Boolean.parseBoolean(String.valueOf(bitChars[j]))) {
                         bits[i*8+j] = (byte) 0xFF;
-                    }*/
+                    }
                 }
             }
+
+            System.out.println(bits[0]);
 
             byte[][] pixel = new byte[640][384];
 
@@ -46,9 +48,13 @@ public class Test {
                 }
             }*/
 
+            System.out.println(bits.length);
+            System.out.println(640*384);
+
             for (int i = 0; i < HEIGHT; i++) {
                 for (int j = 0; j < WIDTH; j++) {
-                    image.setRGB(i, j, bits[i*WIDTH+j]);
+                    System.out.println(i*WIDTH+j);
+                    image.setRGB(j, i, bits[i*WIDTH+j]);
                 }
             }
 

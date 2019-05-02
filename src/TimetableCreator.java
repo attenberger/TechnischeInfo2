@@ -48,7 +48,7 @@ public class TimetableCreator {
 			}
 		}
 
-		System.out.println(Arrays.toString(bits.toByteArray()));
+		System.out.println(bits.length());
 
 		//write bits into byte array -> TCP sends whole bytes
 		return bits.toByteArray();
