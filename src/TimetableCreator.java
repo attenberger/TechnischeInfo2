@@ -47,7 +47,7 @@ public class TimetableCreator {
 
 	}
 	
-	private BufferedImage generateImage(String room, Date date, List<Slot> slots) {
+	public BufferedImage generateImage(String room, Date date, List<Slot> slots) {
 		
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_BINARY);
         Graphics2D graphics2d = image.createGraphics();
