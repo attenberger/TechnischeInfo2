@@ -9,14 +9,19 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.*;
 
 
 public class ZPAParser {
+
+    private static final int PORT = 8090;
 
     private final String ZPA_URL = "https://w3-o.cs.hm.edu:8000/public/bookings/";
 
@@ -28,7 +33,7 @@ public class ZPAParser {
     private String csrfToken;
     private String csrfMiddleWareToken;
 
-    private List<Slot> slots = new ArrayList<>();
+    private static List<Slot> slots = new ArrayList<>();
 
     private ZPAParser(String date, String room) {
         this.room = room;
@@ -86,11 +91,13 @@ public class ZPAParser {
 
         Slot slot;
         for (Element slotElement : slotElements) {
-            slot = new Slot(slotElement.select("div.slot_header").text(), slotElement.select("div.slot_inner")
+            String startTime = slotElement.select("div.slot_header").text().split(" ")[0];
+            String endTime = slotElement.select("div.slot_header").text().split(" ")[2];
+            slot = new Slot(LocalTime.parse(startTime), LocalTime.parse(endTime), slotElement.select("div.slot_inner")
                     .text().replaceAll(newLine, "\n"));
             slots.add(slot);
         }
-        slots.sort(Comparator.comparingInt(o -> Integer.parseInt(o.getTime().substring(0, 2))));
+        slots.sort((a, b) -> a.getStartTime().compareTo(b.getEndTime()));
     }
 
     private void initializeRooms(String html) {
@@ -153,33 +160,6 @@ public class ZPAParser {
         return builder.toString();
     }
 
-    private class Slot {
-
-        private String time;
-        private String body;
-
-        Slot(String time, String body) {
-            this.time = time;
-
-            String[] lines = body.split("\n");
-            StringBuilder builder = new StringBuilder();
-            for (String line : lines) {
-                builder.append(line.trim()).append("\n");
-            }
-            this.body = builder.toString();
-        }
-
-        @Override
-        public String toString() {
-            return time + "\n" + body + "\n\n";
-        }
-
-        String getTime() {
-            return time;
-        }
-    }
-
-
     public static void main(String[] args) {
         DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         String date = format.format(new Date());
@@ -198,6 +178,16 @@ public class ZPAParser {
             parser.parseTimeTable(html);
 
             System.out.println(parser);
+
+            TimetableCreator textToImage = new TimetableCreator();
+
+            BufferedImage image = textToImage.generateImage("Raum: 2.007", new Date(), slots);
+            try {
+                ImageIO.write(image, "png", new File("Sample.png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
         } catch (Exception e) {
             System.out.println("Failed reading html!");
             e.printStackTrace();

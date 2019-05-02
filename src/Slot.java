@@ -11,7 +11,13 @@ public class Slot {
 	public Slot(LocalTime startTime, LocalTime endTime, String body) {
 		this.startTime = startTime;
 		this.endTime = endTime;
-		this.body = body;
+
+        String[] lines = body.split("\n");
+        StringBuilder builder = new StringBuilder();
+        for (String line : lines) {
+            builder.append(line.trim()).append("\n");
+        }
+        this.body = builder.toString();
 	}
 	
 	public LocalTime getStartTime() {
@@ -35,5 +41,10 @@ public class Slot {
 	public void setBody(String body) {
 		this.body = body;
 	}
+
+    @Override
+    public String toString() {
+        return startTime.toString() + " - " + endTime.toString() + "\n" + body + "\n\n";
+    }
 	
 }
