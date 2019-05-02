@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class Test {
 
@@ -15,7 +14,7 @@ public class Test {
     public static void main(String[] args) {
 
         try {
-            Socket socket = new Socket(InetAddress.getLocalHost(), 4568);
+            Socket socket = new Socket(InetAddress.getLocalHost(), 5555);
 
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
@@ -23,42 +22,33 @@ public class Test {
             writer.flush();
 
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-            byte[] bytes = dataInputStream.readAllBytes();
+            byte[] bytes = new byte[HEIGHT*WIDTH / 8];
+            dataInputStream.read(bytes);
 
             byte[] bits = new byte[bytes.length * 8];
 
             for (int i = 0; i < bytes.length; i++) {
                 char[] bitChars = String.format("%8s", Integer.toBinaryString(bytes[i] & 0xFF)).replace(' ', '0').toCharArray();
+                /*char[] bitCharsx = new char[bitChars.length];
+                for(int p = 0; p < bitChars.length; p++) {
+                    bitCharsx[p] = bitChars[bitChars.length - 1 - p];
+                }*/
                 for (int j = 0; j < 8; j++) {
-                    if (Boolean.parseBoolean(String.valueOf(bitChars[j]))) {
+                    if (bitChars[j] == '1') {
                         bits[i*8+j] = (byte) 0xFF;
                     }
                 }
             }
 
-            System.out.println(bits[0]);
-
-            byte[][] pixel = new byte[640][384];
-
             BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 
-            /*for (int i = 0; i < HEIGHT; i++) {
-                for (int j = 0; j < WIDTH; j++) {
-                    pixel[i][j] = bits[i*WIDTH+j];
-                }
-            }*/
-
-            System.out.println(bits.length);
-            System.out.println(640*384);
-
-            for (int i = 0; i < HEIGHT; i++) {
-                for (int j = 0; j < WIDTH; j++) {
-                    System.out.println(i*WIDTH+j);
-                    image.setRGB(j, i, bits[i*WIDTH+j]);
+            for (int i = 0; i < WIDTH; i++) {
+                for (int j = 0; j < HEIGHT; j++) {
+                    image.setRGB(i, j, bits[i*HEIGHT+j]);
                 }
             }
 
-            ImageIO.write(image, "png", new File("generated.png"));
+            ImageIO.write(image, "png", new File("testgenerated.png"));
 
             socket.close();
 

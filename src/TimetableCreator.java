@@ -7,12 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.BitSet;
 import java.util.List;
-import java.io.File;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.util.*;
 
 public class TimetableCreator {
 	
@@ -39,19 +33,33 @@ public class TimetableCreator {
 		}
 
 		//byte array to bit set
-		BitSet bits = new BitSet(pixels.length * pixels[0].length);
+		BitSet bits = new BitSet( image.getWidth() * image.getHeight());
+
 		for (int i = 0; i < pixels.length; i++) {
 			for (int j = 0; j < pixels[i].length; j++) {
 				if (pixels[i][j] == 1) {
-					bits.set(i * pixels.length + j);
+					bits.set(i * pixels[i].length + j);
 				}
 			}
 		}
 
-		System.out.println(bits.length());
+		byte[] reversed = bits.toByteArray();
+		for(int i = 0; i < reversed.length; i++) {
+			reversed[i] = reverse(reversed[i]);
+		}
+		return reversed;
 
-		//write bits into byte array -> TCP sends whole bytes
-		return bits.toByteArray();
+	}
+
+	//reverses bits in a byte, eg. 10000000 --> 00000001
+	public byte reverse(byte x) {
+		int size = 8;
+		byte y = 0;
+		for(int position = size - 1; position >= 0; position--) {
+			y += ((x&1)<<position);
+			x >>= 1;
+		}
+		return y;
 	}
 	
 	public byte[] generateImageByteArray(String room, String date, List<Slot> slots) throws Exception {
@@ -71,7 +79,6 @@ public class TimetableCreator {
         printTextCentered(graphics2d, date, fontmetrics.getAscent());
         printTextCentered(graphics2d, room, (int)(fontmetrics.getAscent() * 2.5));
         graphics2d.drawLine(0, (int)(fontmetrics.getAscent() * 3), WIDTH, (int)(fontmetrics.getAscent() * 3));
-        
 
         font = new Font("Arial", Font.PLAIN, 15);
         graphics2d.setFont(font);
@@ -84,7 +91,6 @@ public class TimetableCreator {
 	
 	private void printSlots(Graphics2D graphics2d, List<Slot> slots, int pos_Y, int pos_X, int width) {
 		for (Slot slot : slots) {
-			System.out.println();
 			int top = (int)(pos_X + ((slot.getStartTime().getHour() - FIRST_HOUR) + slot.getStartTime().getMinute() / 60.0) * HOUR_HEIGHT);
 			int bottom = (int)(pos_X + ((slot.getEndTime().getHour() - FIRST_HOUR) + slot.getEndTime().getMinute() / 60.0) * HOUR_HEIGHT);
 			int height = bottom - top;

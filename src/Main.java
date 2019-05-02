@@ -6,7 +6,9 @@ import java.net.Socket;
 
 public class Main {
 
-    private static final int PORT = 4568;
+    //TODO Exception Handling in allen Klassen
+
+    private static final int PORT = 5555;
 
     public static void main(String[] args) {
 
@@ -16,7 +18,7 @@ public class Main {
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
-                    System.out.println("accepted");
+                    System.out.println("server accepted new connection");
                     new EchoSocket(socket).start();
 
                 } catch (IOException e) {
