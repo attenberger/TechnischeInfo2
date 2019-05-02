@@ -5,6 +5,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -113,6 +115,33 @@ public class ZPAParser {
         }
         in.close();
         return response.toString();
+    }
+
+    private byte[] picToBytes(BufferedImage image) throws Exception {
+
+        byte[][] pixels = new byte[image.getWidth()][];
+
+        //read black / white values from image and save into byte array
+        for (int x = 0; x < image.getWidth(); x++) {
+            pixels[x] = new byte[image.getHeight()];
+
+            for (int y = 0; y < image.getHeight(); y++) {
+                pixels[x][y] = (byte) (image.getRGB(x, y) == 0xFFFFFFFF ? 1 : 0);
+            }
+        }
+
+        //byte array to bit set
+        BitSet bits = new BitSet(pixels.length * pixels[0].length);
+        for (int i = 0; i < pixels.length; i++) {
+            for (int j = 0; j < pixels[i].length; j++) {
+                if (pixels[i][j] == 1) {
+                    bits.set(i * pixels.length + j);
+                }
+            }
+        }
+
+        //write bits into byte array -> TCP sends whole bytes
+        return bits.toByteArray();
     }
 
     @Override
