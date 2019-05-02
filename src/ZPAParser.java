@@ -9,6 +9,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -18,6 +20,8 @@ import java.util.*;
 
 
 public class ZPAParser {
+
+    private static final int PORT = 8090;
 
     private final String ZPA_URL = "https://w3-o.cs.hm.edu:8000/public/bookings/";
 
