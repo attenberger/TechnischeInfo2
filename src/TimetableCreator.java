@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class TimetableCreator {
 	private static final int PADDING = 5;
 	private static final int FONTSIZE = 20;
 	private static final int MAXLINESPERSLOT = 3;
+	private static final int MAXLINELENGTH = 40;
 
 	private byte[] picToBytes(BufferedImage image) throws Exception {
 
@@ -105,6 +107,7 @@ public class TimetableCreator {
 	
 	private void printHourScale(Graphics2D graphics2d, int pos_Y, int width) {
 		for (int hour = 8; hour < 21; hour++) {
+			graphics2d.drawLine(0, pos_Y + (hour - FIRST_HOUR) * HOUR_HEIGHT - FONTSIZE / 2 - PADDING, width - 5, pos_Y + (hour - FIRST_HOUR) * HOUR_HEIGHT - FONTSIZE / 2 - PADDING);
 			printText(graphics2d, hour + ":00", pos_Y + (hour - FIRST_HOUR) * HOUR_HEIGHT, 0, width, false);
 		}
 	}
@@ -123,10 +126,37 @@ public class TimetableCreator {
         if (centered) {
         	offset_X += (width - fontmetrics.stringWidth(text)) / 2;
         }
-        String[] lines = text.split("\n", MAXLINESPERSLOT);
+        String[] lines = splitLongLine(text).split("\n", MAXLINESPERSLOT);
         for (int line = 0; line < lines.length; line++) {
             graphics2d.drawString(lines[line], offset_X, pos_Y + line * FONTSIZE);
         }
+	}
+	
+	private String splitLongLine(String text) {
+		String[] words = text.split(" ");
+		List<String> lines = new ArrayList<>();
+		lines.add("");
+		int currentLine = 0;
+		int lengthCurrentLine = 0;
+		int indexCurrentWord = 0;
+		while (indexCurrentWord < words.length) {
+			if (lengthCurrentLine + words[indexCurrentWord].length() > MAXLINELENGTH && lengthCurrentLine != 0) {
+				currentLine++;
+				if (currentLine >= MAXLINESPERSLOT) {
+					break;
+				}
+				lengthCurrentLine = 0;
+				lines.add("");
+			}
+			lines.set(currentLine, lines.get(currentLine) + words[indexCurrentWord] + " ");
+			lengthCurrentLine += words[indexCurrentWord].length() + 1;
+			indexCurrentWord++;
+		}
+		String result = "";
+		for (String line : lines) {
+			result = result + line + "\n";
+		}
+		return result;
 	}
 
 }
