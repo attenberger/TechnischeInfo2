@@ -27,10 +27,10 @@ public class TimetableCreator {
 
 		//read black / white values from image and save into byte array
 		for (int x = 0; x < image.getWidth(); x++) {
-			pixels[x] = new byte[image.getHeight()];
+			pixels[WIDTH-x-1] = new byte[image.getHeight()];
 
 			for (int y = 0; y < image.getHeight(); y++) {
-				pixels[x][y] = (byte) (image.getRGB(x, y) == 0xFFFFFFFF ? 1 : 0);
+				pixels[WIDTH-x-1][y] = (byte) (image.getRGB(x, y) == 0xFFFFFFFF ? 1 : 0);
 			}
 		}
 
