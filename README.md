@@ -9,7 +9,7 @@ Das E-Paper Display zeigt die Belegung für einen spezifischen Raum für einen W
 ### Projektstruktur & grobe Erklärung
 
 - Sourcecode für das ESP Driver Board im Verzeichnis ``epaper``
-  - Es wird ein zyklischer Deepsleep von TODO x Sekunden ausgeführt
+  - Es wird ein zyklischer Deepsleep von TODO x Sekunden ausgeführt. Bei jedem Aufwachen wird der Server angefragt.
 - Sourcecode für den Server in ``TODO``
   - Der ESP schickt über TCP die Raumnummer z.B. "R1.010A" an den Server
   - Der Server fragt dann automatisch das ZPA an, parst den HTML-Baum vom ZPA und generiert daraus das Bild für das E-Paper
@@ -27,9 +27,9 @@ Das E-Paper Display zeigt die Belegung für einen spezifischen Raum für einen W
 - aktiver Zustand: ca. 70mA, dauer ca. 16 Sekunden
 - Deep Sleep: 2,7mA
 
-### Einrichten und Starten des ESP Boards
+### Konfiguration und Starten des ESP Boards
 
-- TODO: welche Entwicklungsumgebung, compile code, code flashen, wie board starten (welchen Button drücken), ...
+- TODO: welche Entwicklungsumgebung, wlan-pw und ssid, server ip, compile code, code flashen, wie board starten (welchen Button drücken), ...
 
 ### Starten des Servers
 
