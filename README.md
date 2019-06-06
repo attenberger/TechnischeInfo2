@@ -29,7 +29,7 @@ Das E-Paper Display zeigt die Belegung für einen spezifischen Raum für einen W
 
 ### Konfiguration und Starten des ESP Boards
 
-- TODO: welche Entwicklungsumgebung, wlan-pw und ssid, server ip, compile code, code flashen, wie board starten (welchen Button drücken), ...
+- TODO: welche Entwicklungsumgebung, wlan-pw und ssid (per serieller schnittstelle über putty?), server ip, compile code, code flashen, wie board starten (welchen Button drücken), ...
 
 ### Starten des Servers
 
