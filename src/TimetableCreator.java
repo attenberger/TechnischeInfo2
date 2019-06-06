@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -62,6 +63,46 @@ public class TimetableCreator {
 			x >>= 1;
 		}
 		return y;
+	}
+
+	public byte[] generateErrorImageByteArray(String msg) throws Exception {
+
+		BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_BINARY);
+		Graphics2D graphics2d = image.createGraphics();
+
+		// set background white
+		graphics2d.setPaint(new Color(255,255,255));
+		graphics2d.fillRect(0, 0, image.getWidth(), image.getHeight());
+
+		Font font = new Font("Arial", Font.BOLD, FONTSIZE);
+		graphics2d.setFont(font);
+		FontMetrics fontmetrics = graphics2d.getFontMetrics();
+		graphics2d.setColor(Color.BLACK);
+
+		int y = 50;
+		graphics2d.drawString("Ein Fehler ist aufgetreten.", 50, y);
+		y += 30;
+		graphics2d.drawString("Anzeige zur Zeit nicht möglich.", 50, y);
+
+		y += 50;
+
+		font = new Font("Arial", Font.PLAIN, FONTSIZE);
+		graphics2d.setFont(font);
+
+		List<String> strings = new ArrayList<String>();
+		int index = 0;
+		while (index < msg.length()) {
+			strings.add(msg.substring(index, Math.min(index + 30,msg.length())));
+			index += 30;
+		}
+		for(String s : strings) {
+			y += 30;
+			graphics2d.drawString(s, 50, y);
+		}
+
+		graphics2d.dispose();
+
+		return picToBytes(image);
 	}
 	
 	public byte[] generateImageByteArray(String room, String date, List<Slot> slots) throws Exception {
