@@ -14,7 +14,6 @@ public class Main {
 
             while (true) {
                 try {
-                    System.out.println("starting server...");
                     Socket socket = serverSocket.accept();
                     System.out.println("server accepted new connection");
                     new EchoSocket(socket).start();
