@@ -19,8 +19,8 @@ public class EchoSocket extends Thread {
     public void run() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            //String room = reader.readLine();
-            String room = "R2.007";
+            String room = reader.readLine();
+            //String room = "R1.010A";
             System.out.println(room + "\n");
             DateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
             String date = dateformat.format(new Date());

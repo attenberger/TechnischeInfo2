@@ -1,9 +1,9 @@
 
 #include <WiFi.h>
 
-const char* ssid     = "iPhone";
-const char* password = "hallo1234!";
-const char* host = "172.20.10.3";
+const char* ssid     = "Hotspot_CB";
+const char* password = "zxpt4402";
+const char* host = "192.168.43.111";
 const uint16_t port = 5555;
 const uint16_t roomID = 0;
 
@@ -49,6 +49,9 @@ void getPicture(uint8_t *buf)
         Serial.println("Waiting 5 seconds before retrying...");
         delay(5000);
     }
+
+    client.write("R2.007\n");
+    client.flush();
 
     int i = 0;
 
