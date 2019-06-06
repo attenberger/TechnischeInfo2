@@ -17,10 +17,11 @@ public class EchoSocket extends Thread {
 
     @Override
     public void run() {
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+        TimetableCreator timetableCreator = new TimetableCreator();
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             String room = reader.readLine();
-            //String room = "R1.010A";
             System.out.println(room + "\n");
             DateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
             String date = dateformat.format(new Date());
@@ -28,14 +29,24 @@ public class EchoSocket extends Thread {
             ZPAParser parser = new ZPAParser(date, room);
             List<Slot> slots = parser.getSlots();
 
-            TimetableCreator timetableCreator = new TimetableCreator();
             byte[] bytes = timetableCreator.generateImageByteArray(room, date, slots);
 
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.write(bytes);
 
             socket.close();
+        } catch (IOException e) {
+            sendErrorData(timetableCreator, e.getMessage());
         } catch (Exception e) {
+            sendErrorData(timetableCreator, e.getMessage());
+        }
+    }
+
+    private void sendErrorData(TimetableCreator timetableCreator, String errorMsg) {
+        byte[] bytes =  timetableCreator.generateErrorImageByteArray(errorMsg);
+        try (DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream())) {
+            dataOutputStream.write(bytes);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

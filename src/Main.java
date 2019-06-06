@@ -12,17 +12,17 @@ public class Main {
 
     public static void main(String[] args) {
 
-        try {
-            ServerSocket serverSocket = new ServerSocket(PORT);
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
 
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
                     System.out.println("server accepted new connection");
                     new EchoSocket(socket).start();
-
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                    serverSocket.close();
+                    break;
                 }
             }
         } catch (IOException e) {
