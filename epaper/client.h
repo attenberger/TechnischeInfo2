@@ -1,21 +1,22 @@
 
 #include <WiFi.h>
+#include "config.h"
 
-const char* ssid     = "Hotspot_CB";
-const char* password = "zxpt4402";
-const char* host = "192.168.43.111";
-const uint16_t port = 5555;
-const uint16_t roomID = 0;
 
 const size_t pictureSize = 30 * 1024;
 
 void setupWIFI()
 {
+    char ssid[100] = {0};
+    char password[100] = {0};
+    getSSID(ssid);
+    getPass(password);
     
     Serial.println();
     Serial.println();
     Serial.print("Connecting to ");
     Serial.println(ssid);
+    
 
     // Applying SSID and password
     WiFi.begin(ssid, password); 
@@ -32,7 +33,6 @@ void setupWIFI()
 
     Serial.println("WiFi connected");
     Serial.println("");
-    Serial.println("WiFi connected");
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
     
@@ -40,6 +40,15 @@ void setupWIFI()
 
 void getPicture(uint8_t *buf)
 {
+    char host[100] = {0};
+    char room[100] = {0};
+    int32_t tmp;
+    uint16_t port;
+    getIP(host);
+    getRoom(room);
+    getPort(&tmp);
+    port = tmp;
+    
     WiFiClient client;
     Serial.print("Connecting to ");
     Serial.println(host);
@@ -64,14 +73,6 @@ void getPicture(uint8_t *buf)
         else
             delay(100);
     }
-        //int x = client.read(buf, pictureSize);
-//        Serial.println(x,DEC);
-    /*while(i < pictureSize)
-    {
-        uint8_t x = client.read();
-        buf[i] = x;
-        i++;
-    }*/
     
 }
     
