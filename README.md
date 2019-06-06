@@ -24,3 +24,10 @@ Das E-Paper Display zeigt die Belegung für einen spezifischen Raum für einen W
 ### Starten des Servers
 
 - Der Server lässt sich mit Maven starten: ``TODO``
+
+### Testen des Servers
+
+- Es wurde ein Testclient geschrieben, der das ESP Board simuliert.
+- File: ``Test.java``
+- main Starten, dann wird das übertragene Bild als ``testgenerated.png`` gespeichert. Das Bild ist gespiegelt, hier könnte der Testclient noch verbessert werden... :-)
+- vorher nicht vergessen, den Server zu starten
