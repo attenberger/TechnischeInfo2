@@ -126,13 +126,17 @@ public class TimetableCreator {
         if (centered) {
         	offset_X += (width - fontmetrics.stringWidth(text)) / 2;
         }
-        String[] lines = splitLongLine(text).split("\n", MAXLINESPERSLOT);
+        String[] lines = text.split("\n");
+        List<String> timetableLines = new ArrayList<>();
         for (int line = 0; line < lines.length; line++) {
-            graphics2d.drawString(lines[line], offset_X, pos_Y + line * FONTSIZE);
+        	timetableLines.addAll(splitLongLine(lines[line]));
+        }
+        for (int line = 0; line < MAXLINESPERSLOT && line < timetableLines.size(); line++) {
+            graphics2d.drawString(timetableLines.get(line), offset_X, pos_Y + line * FONTSIZE);
         }
 	}
 	
-	private String splitLongLine(String text) {
+	private List<String> splitLongLine(String text) {
 		String[] words = text.split(" ");
 		List<String> lines = new ArrayList<>();
 		lines.add("");
@@ -152,11 +156,7 @@ public class TimetableCreator {
 			lengthCurrentLine += words[indexCurrentWord].length() + 1;
 			indexCurrentWord++;
 		}
-		String result = "";
-		for (String line : lines) {
-			result = result + line + "\n";
-		}
-		return result;
+		return lines;
 	}
 
 }
