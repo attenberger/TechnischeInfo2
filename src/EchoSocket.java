@@ -20,8 +20,7 @@ public class EchoSocket extends Thread {
 
         TimetableCreator timetableCreator = new TimetableCreator();
 
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             String room = reader.readLine();
             System.out.println(room + "\n");
             DateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
@@ -37,9 +36,18 @@ public class EchoSocket extends Thread {
 
             socket.close();
         } catch (IOException e) {
-            timetableCreator.generateErrorImageByteArray("Creating connection to ZPA failed!");
+            sendErrorData(timetableCreator, e.getMessage());
         } catch (Exception e) {
-            timetableCreator.generateErrorImageByteArray(e.getMessage());
+            sendErrorData(timetableCreator, e.getMessage());
+        }
+    }
+
+    private void sendErrorData(TimetableCreator timetableCreator, String errorMsg) {
+        byte[] bytes =  timetableCreator.generateErrorImageByteArray(errorMsg);
+        try (DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream())) {
+            dataOutputStream.write(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

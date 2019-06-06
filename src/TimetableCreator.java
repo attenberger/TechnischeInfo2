@@ -65,7 +65,7 @@ public class TimetableCreator {
 		return y;
 	}
 
-	public void generateErrorImageByteArray(String msg) {
+	public byte[] generateErrorImageByteArray(String msg) {
 
 		BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_BINARY);
 		Graphics2D graphics2d = image.createGraphics();
@@ -101,6 +101,8 @@ public class TimetableCreator {
 		}
 
 		graphics2d.dispose();
+
+		return picToBytes(image);
 	}
 	
 	public byte[] generateImageByteArray(String room, String date, List<Slot> slots){
