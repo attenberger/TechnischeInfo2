@@ -18,7 +18,7 @@ public class Test {
 
             PrintWriter writer = new PrintWriter(socket.getOutputStream());
 
-            writer.write("R1.006\r\n");
+            writer.write("R1.008\r\n");
             writer.flush();
 
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
