@@ -22,7 +22,7 @@ public class TimetableCreator {
 	private static final int MAXLINESPERSLOT = 3;
 	private static final int MAXLINELENGTH = 40;
 
-	private byte[] picToBytes(BufferedImage image) throws Exception {
+	private byte[] picToBytes(BufferedImage image) {
 
 		byte[][] pixels = new byte[image.getWidth()][];
 
@@ -65,7 +65,7 @@ public class TimetableCreator {
 		return y;
 	}
 
-	public byte[] generateErrorImageByteArray(String msg) throws Exception {
+	public void generateErrorImageByteArray(String msg) {
 
 		BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_BINARY);
 		Graphics2D graphics2d = image.createGraphics();
@@ -101,11 +101,9 @@ public class TimetableCreator {
 		}
 
 		graphics2d.dispose();
-
-		return picToBytes(image);
 	}
 	
-	public byte[] generateImageByteArray(String room, String date, List<Slot> slots) throws Exception {
+	public byte[] generateImageByteArray(String room, String date, List<Slot> slots){
 		
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_BINARY);
         Graphics2D graphics2d = image.createGraphics();

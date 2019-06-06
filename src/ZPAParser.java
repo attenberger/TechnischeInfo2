@@ -29,23 +29,16 @@ public class ZPAParser {
         this.date = date;
     }
 
-    public List<Slot> getSlots() {
+    public List<Slot> getSlots() throws Exception {
 
         String html;
+        html = getTokens();
 
-        try {
-            html = getTokens();
+        initializeRooms(html);
 
-            initializeRooms(html);
+        html = getTimeTable();
 
-            html = getTimeTable();
-
-            return parseTimeTable(html);
-
-        } catch (Exception e) {
-            System.out.println("Failed reading html!");
-            return null;
-        }
+        return parseTimeTable(html);
     }
 
     private String getTokens() throws Exception {
@@ -56,7 +49,8 @@ public class ZPAParser {
         int responseCode = con.getResponseCode();
 
         if (responseCode != 200) {
-            throw new IOException("Bad response code!");
+            con.disconnect();
+            throw new Exception("HTML-request to get token causes bad response code!");
         }
 
         //get csrf token from response header
@@ -84,7 +78,8 @@ public class ZPAParser {
 
         int responseCode = con.getResponseCode();
         if (responseCode != 200) {
-            throw new IOException("Bad response code");
+            con.disconnect();
+            throw new Exception("HTML-request to get time table causes bad response code!");
         }
         return readHTML(con);
     }
@@ -123,25 +118,21 @@ public class ZPAParser {
         }
     }
 
-    private String readHTML(HttpURLConnection con) throws IOException {
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-            response.append("\n");
+    private String readHTML(HttpURLConnection con) throws Exception {
+        try {
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+                response.append("\n");
+            }
+            in.close();
+            return response.toString();
+        } catch (Exception e) {
+            con.disconnect();
+            throw new Exception("Error occurred while reading HTML-file!");
         }
-        in.close();
-        return response.toString();
     }
-
-    /*@Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for (Slot slot : slots) {
-            builder.append(slot);
-        }
-        return builder.toString();
-    }*/
 }
