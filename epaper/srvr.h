@@ -36,7 +36,7 @@ bool isIndexPage = true; // true : GET  request, client needs 'index' page;
                          // false: POST request, server sends empty page.
 /* Server initialization -------------------------------------------------------*/
 void Srvr__setup() 
-{  
+{  /*
     Serial.println();
     Serial.println();
     Serial.print("Connecting to ");
@@ -63,6 +63,7 @@ void Srvr__setup()
 
     // Show obtained IP address in local Wifi net
     Serial.println(myIP = WiFi.localIP());
+    */
 }
 
 /* Sending a script to the client's browser ------------------------------------*/

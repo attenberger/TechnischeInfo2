@@ -3,7 +3,6 @@
 #include <Esp.h>
 
 #include "client.h"
-#include "config.h"
 #include "image.h"
 
 RTC_DATA_ATTR int bootCount = 0;
@@ -19,7 +18,7 @@ void setup() {
     if (bootCount == 0)
     {
         Serial.println("Press Enter key to configure");
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 100; i++)
         {
             if(Serial.read() == '\n' )
             {
@@ -39,15 +38,6 @@ void setup() {
     getPicture(picture);
 
     
-    
-    for(int i = 0; i < pictureSize; i++)
-    {
-        Serial.print(picture[i], HEX);
-        Serial.print(" ");
-        if(i%128 == 127)
-            Serial.println();
-    }
-    
 
     displayImage(picture, pictureSize);
     free(picture);
@@ -58,13 +48,13 @@ void setup() {
 
 
 
-  /*delay(3000);
+  delay(3000);
 
-  Serial.print("End\n");
+  Serial.print("Sleeping ...\n");
 
-  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  esp_sleep_enable_timer_wakeup(60 * uS_TO_S_FACTOR);
   esp_deep_sleep_start();
-  */
+  
 }
 
 void loop() {

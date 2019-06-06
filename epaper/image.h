@@ -4,12 +4,9 @@
 
 void displayImage(byte *imageData, size_t length) 
 {
-    Serial.println("Entering displayImage");
     EPD_initSPI();
     EPD_dispIndex = 19;
     EPD_dispInit();
-    Serial.println("Length is:");
-    Serial.println(length);
     for (int i = 0; i < length; i++) 
     {
         byte position = 1 << 7;

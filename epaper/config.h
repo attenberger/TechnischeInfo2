@@ -1,15 +1,10 @@
 #include <EEPROM.h>
 
-
-char c_ssid[100] = {0};
-char c_pass[100] = {0};
-char c_ip[100] = {0};
-uint16_t c_port = 12345;
-uint16_t c_roomID = 0;
-
-
-
-
+#define OF_SSID  0
+#define OF_PASS  100
+#define OF_IP    200
+#define OF_ROOM  300
+#define OF_PORT  400
 
 
 void showHelp();
@@ -140,29 +135,28 @@ void setOption(char *option, char *value)
 {
     if(strcmp(option, "ssid") == 0)
     {
-        EEPROM.writeBytes(0, value, strlen(value) + 1);
+        EEPROM.writeBytes(OF_SSID, value, strlen(value) + 1);
         EEPROM.commit();
     }
     else if(strcmp(option, "pass") == 0)
     {
-        EEPROM.writeBytes(100, value, strlen(value) + 1);
+        EEPROM.writeBytes(OF_PASS, value, strlen(value) + 1);
         EEPROM.commit();
     }
     else if(strcmp(option, "ipaddress") == 0)
     {
-        EEPROM.writeBytes(200, value, strlen(value) + 1);
+        EEPROM.writeBytes(OF_IP, value, strlen(value) + 1);
+        EEPROM.commit();
+    }
+    else if(strcmp(option, "room") == 0)
+    {
+        EEPROM.writeBytes(OF_ROOM, value, strlen(value) + 1);
         EEPROM.commit();
     }
     else if(strcmp(option, "port") == 0)
     {
         int32_t x = atoi(value);
-        EEPROM.writeInt(300, x);
-        EEPROM.commit();
-    }
-    else if(strcmp(option, "roomID") == 0)
-    {
-        int32_t x = atoi(value);
-        EEPROM.writeInt(304, x);
+        EEPROM.writeInt(OF_PORT, x);
         EEPROM.commit();
     }
     else
@@ -180,35 +174,32 @@ void readOption(char *option)
     char buff[100];
     if(strcmp(option, "ssid") == 0)
     {
-        EEPROM.readBytes(0, buff, 100);
+        EEPROM.readBytes(OF_SSID, buff, 100);
         Serial.print(option);
         Serial.print(": ");
         Serial.println(buff);
     }
     else if(strcmp(option, "pass") == 0)
     {
-        EEPROM.readBytes(100, buff, 100);
+        Serial.println("Password can't be read!");
+    }
+    else if(strcmp(option, "ipaddress") == 0)
+    {
+        EEPROM.readBytes(OF_IP, buff, 100);
         Serial.print(option);
         Serial.print(": ");
         Serial.println(buff);
     }
-    else if(strcmp(option, "ipaddress") == 0)
+    else if(strcmp(option, "room") == 0)
     {
-        EEPROM.readBytes(200, buff, 100);
+        EEPROM.readBytes(OF_ROOM, buff, 100);
         Serial.print(option);
         Serial.print(": ");
         Serial.println(buff);
     }
     else if(strcmp(option, "port") == 0)
     {
-        int32_t x = EEPROM.readInt(300);
-        Serial.print(option);
-        Serial.print(": ");
-        Serial.println(x, DEC);
-    }
-    else if(strcmp(option, "roomID") == 0)
-    {
-        int32_t x = EEPROM.readInt(304);
+        int32_t x = EEPROM.readInt(OF_PORT);
         Serial.print(option);
         Serial.print(": ");
         Serial.println(x, DEC);
@@ -218,4 +209,25 @@ void readOption(char *option)
         Serial.println("Unknown option");
         return;
     }
+}
+
+void getSSID(char *buff)
+{
+    EEPROM.readBytes(OF_SSID, buff, 100);
+}
+void getIP(char *buff)
+{
+    EEPROM.readBytes(OF_IP, buff, 100);
+}
+void getPass(char *buff)
+{
+    EEPROM.readBytes(OF_PASS, buff, 100);
+}
+void getRoom(char *buff)
+{
+    EEPROM.readBytes(OF_ROOM, buff, 100);
+}
+void getPort(int32_t *x)
+{
+    *x = EEPROM.readInt(OF_PORT);
 }
