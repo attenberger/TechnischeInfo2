@@ -17,6 +17,10 @@ Das E-Paper Display zeigt die Belegung für einen spezifischen Raum für einen W
   - Ein Bit entspricht dabei einem Pixel (schwarz / weiß)
   - Anzahl verschickter Bytes: 384px * 640px = 245760 Bits = 30720 Bytes
 
+### Dependency
+
+- [https://github.com/jhy/jsoup](https://github.com/jhy/jsoup)
+
 ### Hardware
 
 - [E-Paper ESP32 Driver Board](https://www.waveshare.com/wiki/E-Paper_ESP32_Driver_Board)
