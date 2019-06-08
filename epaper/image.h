@@ -156,20 +156,35 @@ void displayImage(byte *imageData, size_t length)
     EPD_initSPI();
     EPD_7in5__init();
 
+    /* Each pixel in our input is represented by one bit where
+    1 equals white and 0 equals black. Each pixel in our
+    e-paper is represented by 4 bit where 0011 equals white
+    and 0000 equals black.*/
+
     for (int i = 0; i < length; i++) 
     {
+        /* starting at the most significant bit we convert each pair of 1-bit
+        input pixels to a pair of 4-bit output pixels */
         byte position = 1 << 7;
         for (int j = 0; j < 4; j++) 
         {
+            /* initialize our output to 0 which represents two black pixels */
             byte output = 0;
+
+            /* if the left bit of our pair is set we or our output with 0x30 to
+            set the corresponding pixel to white */
             if (imageData[i] & position) {
                 output |= 0x30;
             }
             position >>= 1;
+
+            /* if the right bit of our pair is set we or our output with 0x03 to
+            set the corresponding pixel to white */
             if (imageData[i] & position) {
                 output |= 0x03;
             }
             position >>= 1;
+
             EPD_SendData(output);
         }    
     }
