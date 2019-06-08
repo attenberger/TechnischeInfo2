@@ -1,9 +1,11 @@
 
-#define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
 #include <Esp.h>
 
 #include "client.h"
 #include "image.h"
+
+// Conversion factor for micro seconds to seconds
+#define uS_TO_S_FACTOR 1000000
 
 RTC_DATA_ATTR int bootCount = 0;
 
@@ -20,7 +22,7 @@ void setup() {
         Serial.println("Press Enter key to configure");
         for(int i = 0; i < 100; i++)
         {
-            if(Serial.read() == '\n' )
+            if(Serial.read() == '\n')
             {
                 configure();
                 break;
@@ -34,26 +36,21 @@ void setup() {
     bootCount++;
 
     setupWIFI();
+
     uint8_t *picture = (uint8_t *)malloc(pictureSize);
     getPicture(picture);
-
-    
 
     displayImage(picture, pictureSize);
     free(picture);
     
- 
-  
+    delay(3000);
 
+    Serial.print("Sleeping ...\n");
 
-
-
-  delay(3000);
-
-  Serial.print("Sleeping ...\n");
-
-  esp_sleep_enable_timer_wakeup(60 * uS_TO_S_FACTOR);
-  esp_deep_sleep_start();
+    //sleep for one hour
+    uint64_t sleeptime = UINT64_C(60 * 60 * uS_TO_S_FACTOR);
+    esp_sleep_enable_timer_wakeup(sleeptime);
+    esp_deep_sleep_start();
   
 }
 

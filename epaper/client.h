@@ -59,7 +59,8 @@ void getPicture(uint8_t *buf)
         delay(5000);
     }
 
-    client.write("R2.007\n");
+    client.write(room);
+    client.write("\n");
     client.flush();
 
     int i = 0;

@@ -25,7 +25,7 @@ void initConfig()
 
 void configure()
 {
-    Serial.println("Configure mode entered");
+    Serial.println("Configuration mode entered");
     showHelp();
     while(parseLine());
 }
@@ -48,7 +48,7 @@ void showHelp()
     Serial.println("\tpass");
     Serial.println("\tipaddress");
     Serial.println("\tport");
-    Serial.println("\troomID");
+    Serial.println("\troom");
     
 }
 
