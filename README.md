@@ -61,9 +61,27 @@ Das Driver Board kann über die Serielle Schnittstelle konfiguriert werden. Dazu
 
 Wichtig: Falls Putty statt des Serial Monitors der Arduino IDE zum Konfigurieren genutzt wird funktioniert das Drücken der Enter-Taste nicht, da Putty nur ein ``\r`` sendet. Dort muss statt der Enter-Taste STRG-J zum Senden von ``\n`` verwendet werden.
 
+### Builden des Servers in IntelliJ
+
+- Java Version: mind. 1.8
+- Ablauf:
+    1) Enable "Import Maven Projects automatically"
+
+            File -> Settings -> Search: Maven -> Importing
+    2) Run "clean install"
+
+            Auswahl: Maven(Leiste rechts) -> Auswahl: clean + install -> Run Maven Build
+
 ### Starten des Servers
 
-- Der Server lässt sich mit Maven starten: ``TODO``
+- Build generiert eine JAR mit allen Dependencies
+
+        target -> epaper-1.0.0-jar-with-dependencies.jar
+              
+- Ausführen der JAR auf dem Zielrechner, z.B. über CMD:
+
+        java -jar epaper-1.0.0-jar-with-dependencies.jar
+- mind. benötigte Java Version zum Ausführen: 1.8
 
 ### Testen des Servers
 
